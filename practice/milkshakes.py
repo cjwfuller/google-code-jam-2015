@@ -4,38 +4,56 @@ import sys
 
 """Solution to https://code.google.com/codejam/contest/32016/dashboard#s=p1"""
 
-def flavour_used(flavour, all_likes):
-    found = False
-    for l in range(1, len(all_likes), 2):
-        if flavour == l:
-            found = True
-    return found
+def still_possible(like):
+    """Are there flavours that have not been selected or match customer's choice
 
-def is_malted(flavour, all_likes):
-    return True
+    Arguments:
+    like -- e.g. [1, 0, 2, 0]
+    """
+    it = iter(like)
+    for x in it:
+        posn = x
+        malted = next(it)
+        if flavours[posn] == -1 or flavours[posn] == malted:
+            return True
+    return False
 
 def satisfy(num_flavours, all_likes):
-    if not can_satisfy(num_flavours, all_likes):
-        print("IMPOSSIBLE")
-    else:
-        for f in range(1, num_flavours + 1):
-            malted = is_malted(f, all_likes)
-            if not flavour_used(f, all_likes) or not malted:
-                sys.stdout.write("0 ")
-            else:
-                sys.stdout.write("1 ")
-        print()
+    """Try to satisfy a customer with milkshake
 
-if __name__ == '__main__':
+    Arguments:
+    num_flavours - number of flavours of milkshake
+    all_likes - e.g. [[1, 0], [0, 1]]
+    """
+    # build an empty dict of flavour => is_malted
+    for x in range(num_flavours):
+        flavours[x + 1] = -1
+    # attempt to satisfy
+    for like in all_likes:
+        it = iter(like)
+        for x in it:
+            posn = x
+            malted = next(it)
+            if flavours[posn] == -1 or flavours[posn] == malted:
+                flavours[posn] = malted
+            elif not still_possible(like):
+                print("IMPOSSIBLE")
+                return
+    for idx, val in enumerate(flavours):
+        if flavours[idx + 1] == -1:
+            flavours[idx + 1] = 0
+        sys.stdout.write(str(flavours[idx + 1]) + " ")
+    print()
+
+if __name__ == "__main__":
     num_cases = int(input())
     for x in range(num_cases):
-        all_likes = []
+        flavours = {}
         num_flavours = int(input())
-        num_customers= int(input())
+        num_customers = int(input())
+        all_likes = []
         for y in range(num_customers):
             likes = list(map(int, input().rstrip('\n').split(' ')))
-            num_likes = int(likes[0])
-            likes = likes[1:]
-            all_likes = all_likes + likes
+            all_likes = all_likes + [likes[1:]]
         print("Case #" + str(x + 1) + ": ", end="", flush=True)
         satisfy(num_flavours, all_likes)
