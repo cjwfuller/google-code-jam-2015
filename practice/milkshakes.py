@@ -37,12 +37,12 @@ def satisfy(num_flavours, all_likes):
             if flavours[posn] == -1 or flavours[posn] == malted:
                 flavours[posn] = malted
             elif not still_possible(like):
-                print("IMPOSSIBLE")
+                print(" IMPOSSIBLE")
                 return
     for idx, val in enumerate(flavours):
         if flavours[idx + 1] == -1:
             flavours[idx + 1] = 0
-        sys.stdout.write(str(flavours[idx + 1]) + " ")
+        sys.stdout.write(" " + str(flavours[idx + 1]))
     print()
 
 if __name__ == "__main__":
@@ -55,5 +55,5 @@ if __name__ == "__main__":
         for y in range(num_customers):
             likes = list(map(int, input().rstrip('\n').split(' ')))
             all_likes = all_likes + [likes[1:]]
-        print("Case #" + str(x + 1) + ": ", end="", flush=True)
+        print("Case #" + str(x + 1) + ":", end="", flush=True)
         satisfy(num_flavours, all_likes)
